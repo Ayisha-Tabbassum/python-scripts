@@ -1,0 +1,33 @@
+import os
+import subprocess
+
+# Define the Terraform configuration directory
+terraform_dir = "terraform-ec2-instance"
+
+# Define a list of instance names
+instance_names = ["instance1", "instance2", "instance3", ..., "instance20"]
+
+# Function to deploy an EC2 instance
+def deploy_ec2_instance(instance_name):
+    try:
+        # Initialize Terraform in the Terraform configuration directory
+        subprocess.run(["terraform", "init", terraform_dir])
+
+        # Apply the Terraform configuration to create the EC2 instance
+        subprocess.run([
+            "terraform", "apply", "-auto-approve",
+            "-var", f"instance_name={instance_name}",
+        ], cwd=terraform_dir)
+
+        print(f"EC2 instance '{instance_name}' deployed successfully!")
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        print(f"Failed to deploy EC2 instance '{instance_name}'.")
+    finally:
+        # Clean up Terraform files (optional)
+        subprocess.run(["terraform", "destroy", "-auto-approve"], cwd=terraform_dir)
+
+# Loop through the list of instance names and deploy EC2 instances
+for instance_name in instance_names:
+    deploy_ec2_instance(instance_name)

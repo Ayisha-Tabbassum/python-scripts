@@ -1,0 +1,41 @@
+import os
+import subprocess
+
+# Define your AWS region
+aws_region = "us-west-2"
+
+# Define the Terraform configuration directory
+terraform_dir = "terraform-eks-cluster"
+
+# Define the Terraform module source URL
+eks_module_source = "terraform-aws-modules/eks/aws"
+
+# Define a list of cluster names
+cluster_names = ["at-prod1", "at-prod2", "at-prod3", ..., "at-prod30"]
+
+# Function to deploy an EKS cluster
+def deploy_eks_cluster(cluster_name):
+    try:
+        # Initialize Terraform in the Terraform configuration directory
+        subprocess.run(["terraform", "init", terraform_dir])
+
+        # Apply the Terraform configuration to create the EKS cluster
+        subprocess.run([
+            "terraform", "apply", "-auto-approve",
+            "-var", f"cluster_name={cluster_name}",
+            "-var", f"region={aws_region}",
+            "-var", f"eks_module_source={eks_module_source}",
+        ], cwd=terraform_dir)
+
+        print(f"EKS cluster '{cluster_name}' deployed successfully!")
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        print(f"Failed to deploy EKS cluster '{cluster_name}'.")
+    finally:
+        # Clean up Terraform files (optional)
+        subprocess.run(["terraform", "destroy", "-auto-approve"], cwd=terraform_dir)
+
+# Loop through the list of cluster names and deploy EKS clusters
+for cluster_name in cluster_names:
+    deploy_eks_cluster(cluster_name)

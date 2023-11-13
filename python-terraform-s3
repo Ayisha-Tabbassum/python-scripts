@@ -1,0 +1,33 @@
+import os
+import subprocess
+
+# Define the Terraform configuration directory
+terraform_dir = "terraform-s3-bucket"
+
+# Define a list of bucket names
+bucket_names = ["at-bucket1", "at-bucket2", "at-bucket3", ..., "at-bucket30"]
+
+# Function to deploy an S3 bucket
+def deploy_s3_bucket(bucket_name):
+    try:
+        # Initialize Terraform in the Terraform configuration directory
+        subprocess.run(["terraform", "init", terraform_dir])
+
+        # Apply the Terraform configuration to create the S3 bucket
+        subprocess.run([
+            "terraform", "apply", "-auto-approve",
+            "-var", f"bucket_name={bucket_name}",
+        ], cwd=terraform_dir)
+
+        print(f"S3 bucket '{bucket_name}' deployed successfully!")
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        print(f"Failed to deploy S3 bucket '{bucket_name}'.")
+    finally:
+        # Clean up Terraform files (optional)
+        subprocess.run(["terraform", "destroy", "-auto-approve"], cwd=terraform_dir)
+
+# Loop through the list of bucket names and deploy S3 buckets
+for bucket_name in bucket_names:
+    deploy_s3_bucket(bucket_name)

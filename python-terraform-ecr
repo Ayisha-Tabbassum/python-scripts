@@ -1,0 +1,10 @@
+import subprocess
+
+# Define the directory path to your custom ECR module
+module_directory = "path/to/ecr-module"
+
+# Initialize Terraform in the module directory
+subprocess.run(["terraform", "init"], cwd=module_directory)
+
+# Apply the Terraform configuration to create the ECR repositories
+subprocess.run(["terraform", "apply", "-auto-approve"], cwd=module_directory)

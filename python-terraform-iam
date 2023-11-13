@@ -1,0 +1,34 @@
+import boto3
+
+# Initialize the AWS IAM client
+iam_client = boto3.client('iam')
+
+# Define the IAM group name
+group_name = 'prod-support'
+
+# Create the IAM group if it doesn't exist
+try:
+    iam_client.get_group(GroupName=group_name)
+except iam_client.exceptions.NoSuchEntityException:
+    iam_client.create_group(GroupName=group_name)
+
+# Create 100 IAM users and add them to the group with administrator privileges
+for i in range(1, 101):
+    username = f'user{i}'
+    
+    # Create the IAM user
+    iam_client.create_user(UserName=username)
+    
+    # Attach the administrator policy to the user
+    iam_client.attach_user_policy(
+        UserName=username,
+        PolicyArn='arn:aws:iam::aws:policy/AdministratorAccess'
+    )
+    
+    # Add the user to the group
+    iam_client.add_user_to_group(
+        GroupName=group_name,
+        UserName=username
+    )
+
+print("IAM users created and added to the group with administrator privileges.")

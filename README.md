@@ -1,4 +1,4 @@
-## Python-scripts
+## python-scripts
 
 1. python script to deploy 30 eks clusters using terraform module
 2. python script to deploy 30 s3 buckets using terraform module
